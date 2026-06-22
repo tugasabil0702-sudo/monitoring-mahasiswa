@@ -1,4 +1,3 @@
-// app/page.tsx
 'use client';
 
 import useSWR from 'swr';
@@ -132,31 +131,44 @@ export default function MonitoringBeasiswa() {
           </select>
         </section>
 
-        {/* Tabel Data (Sudah Dioptimalkan agar tidak terpotong) */}
+        {/* Tabel Data - Struktur Grid & Pembatas Kolom Diperkuat */}
         <section className={`rounded-2xl border overflow-hidden shadow-sm ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-slate-100'}`}>
           <div className="overflow-x-auto scrollbar-thin">
-            <table className="w-full text-left border-collapse min-w-[1000px]">
+            <table className="w-full text-left border-collapse table-fixed min-w-[1100px]">
               <thead>
-                <tr className={`border-b text-[11px] font-bold uppercase tracking-widest ${isDarkMode ? 'bg-black/60 border-zinc-800 text-zinc-400' : 'bg-slate-50 border-slate-100 text-slate-500'}`}>
-                  <th className="p-5 pl-7 whitespace-nowrap">Nama Mahasiswa</th>
-                  <th className="p-5 whitespace-nowrap">Asal Universitas / Prodi</th>
-                  <th className="p-5 whitespace-nowrap">Alamat Rumah</th>
-                  <th className="p-5 whitespace-nowrap">Nominal UKT</th>
-                  <th className="p-5 whitespace-nowrap">No. Rekening</th>
-                  <th className="p-5 pr-7 text-right whitespace-nowrap">Semester</th>
+                <tr className={`border-b text-[11px] font-bold uppercase tracking-widest ${
+                  isDarkMode ? 'bg-black/60 border-zinc-800 text-zinc-400' : 'bg-slate-50 border-slate-100 text-slate-500'
+                }`}>
+                  <th className={`p-5 pl-7 w-[20%] border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`}>Nama Mahasiswa</th>
+                  <th className={`p-5 w-[22%] border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`}>Asal Universitas / Prodi</th>
+                  <th className={`p-5 w-[25%] border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`}>Alamat Rumah</th>
+                  <th className={`p-5 w-[13%] border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`}>Nominal UKT</th>
+                  <th className={`p-5 w-[13%] border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`}>No. Rekening</th>
+                  <th className="p-5 pr-7 w-[7%] text-right">Smstr</th>
                 </tr>
               </thead>
               <tbody className={isDarkMode ? 'divide-y divide-zinc-800 text-zinc-300' : 'divide-y divide-slate-100 text-slate-700'}>
                 {filteredData && filteredData.length > 0 ? (
                   filteredData.map((row: any[], index: number) => (
                     <tr key={index} className={`transition-colors duration-150 ${isDarkMode ? 'hover:bg-zinc-800/40' : 'hover:bg-slate-50'}`}>
-                      <td className="p-5 pl-7 font-bold whitespace-nowrap">{row[1] || '-'}</td>
-                      {/* Kolom Universitas & Prodi dibuat text-sm dan whitespace-nowrap agar terbaca lurus memanjang */}
-                      <td className="p-5 text-sm font-medium whitespace-nowrap">{row[2] || '-'}</td>
-                      <td className="p-5 text-sm whitespace-nowrap">{row[3] || '-'}</td>
-                      <td className="p-5 font-bold text-emerald-400 whitespace-nowrap">{row[4] || '-'}</td>
-                      <td className="p-5 font-mono text-sm whitespace-nowrap">{row[5] || '-'}</td>
-                      <td className="p-5 pr-7 text-right font-bold whitespace-nowrap">{row[6] || '-'}</td>
+                      <td className={`p-5 pl-7 font-bold text-sm break-words border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`}>
+                        {row[1] || '-'}
+                      </td>
+                      <td className={`p-5 text-sm font-medium break-words border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`}>
+                        {row[2] || '-'}
+                      </td>
+                      <td className={`p-5 text-xs font-normal break-words border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`}>
+                        {row[3] || '-'}
+                      </td>
+                      <td className={`p-5 font-bold text-sm text-emerald-500 break-words border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`}>
+                        {row[4] || '-'}
+                      </td>
+                      <td className={`p-5 font-mono text-xs break-all border-r ${isDarkMode ? 'border-zinc-800' : 'border-slate-100'}`}>
+                        {row[5] || '-'}
+                      </td>
+                      <td className="p-5 pr-7 text-right text-sm font-bold">
+                        {row[6] || '-'}
+                      </td>
                     </tr>
                   ))
                 ) : (
