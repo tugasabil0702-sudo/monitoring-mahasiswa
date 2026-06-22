@@ -12,7 +12,7 @@ export default function MonitoringBeasiswa() {
   const [filterSource, setFilterSource] = useState('Semua');
   const [isDarkMode, setIsDarkMode] = useState(true);
 
-  // Mengatasi Hydration Error (Masalah Gambar 3) dengan memastikan render di client-side penuh
+  // Mengatasi Hydration Error dengan memastikan render di client-side penuh
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -22,18 +22,14 @@ export default function MonitoringBeasiswa() {
     revalidateOnFocus: true
   });
 
-  // Ambil list kategori unik secara dinamis dari Google Sheets (jika row[7] salah, kita bisa sesuaikan index kolomnya)
-  // Di sini disiapkan fallback jika kolom aslinya bergeser
+  // Ambil list kategori unik secara dinamis dari Google Sheets
   const jenisBeasiswaList = data 
-    ? Array.from(new Set(data.map((row: any[]) => row[7] || 'Kategori Umum'))).filter(Boolean) as string[]
+    ? (Array.from(new Set(data.map((row: any[]) => row[7] || 'Kategori Umum'))).filter(Boolean) as string[])
     : ['Sepuluh Sarjana Lanjutan', 'PONPES Lanjutan', 'Scientis Lanjutan', 'Tugas Akhir', 'Kemis Baru'];
 
   const filteredData = data?.filter((row: any[]) => {
     const nama = row[1]?.toLowerCase() || '';
     const universitas = row[2]?.toLowerCase() || '';
-    
-    // SESUAIKAN INDEX INI: Jika di dropdown muncul angka, berarti jenis beasiswa Anda bukan di indeks ke-7 (kolom 8).
-    // Jika nama beasiswa ada di kolom pertama sheet, biasanya berupa row[7] atau sesuaikan ke kolom yang benar.
     const kategoriBeasiswa = row[7] || 'Kategori Umum'; 
     
     const matchesSearch = nama.includes(searchTerm.toLowerCase()) || universitas.includes(searchTerm.toLowerCase());
@@ -45,7 +41,7 @@ export default function MonitoringBeasiswa() {
   const totalMahasiswa = data?.length || 0;
   const totalFiltered = filteredData?.length || 0;
 
-  if (!mounted) return null; // Mencegah flash hydration error sebelum halaman terpasang sempurna
+  if (!mounted) return null;
 
   if (error) {
     return (
@@ -89,7 +85,7 @@ export default function MonitoringBeasiswa() {
             <button
               type="button"
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`p-2.5 rounded-xl border flex items-center justify-center ${
+              className={`p-2.5 text-xs font-bold rounded-xl border flex items-center justify-center ${
                 isDarkMode ? 'bg-zinc-800 border-zinc-700 text-yellow-400' : 'bg-slate-100 border-slate-200 text-slate-600'
               }`}
             >
@@ -136,30 +132,31 @@ export default function MonitoringBeasiswa() {
           </select>
         </section>
 
-        {/* Tabel Data */}
-        <section className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-slate-100'}`}>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+        {/* Tabel Data (Sudah Dioptimalkan agar tidak terpotong) */}
+        <section className={`rounded-2xl border overflow-hidden shadow-sm ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-slate-100'}`}>
+          <div className="overflow-x-auto scrollbar-thin">
+            <table className="w-full text-left border-collapse min-w-[1000px]">
               <thead>
                 <tr className={`border-b text-[11px] font-bold uppercase tracking-widest ${isDarkMode ? 'bg-black/60 border-zinc-800 text-zinc-400' : 'bg-slate-50 border-slate-100 text-slate-500'}`}>
-                  <th className="p-5 pl-7">Nama Mahasiswa</th>
-                  <th className="p-5">Asal Universitas</th>
-                  <th className="p-5">Alamat Rumah</th>
-                  <th className="p-5">Nominal UKT</th>
-                  <th className="p-5">No. Rekening</th>
-                  <th className="p-5 pr-7 text-right">Semester</th>
+                  <th className="p-5 pl-7 whitespace-nowrap">Nama Mahasiswa</th>
+                  <th className="p-5 whitespace-nowrap">Asal Universitas / Prodi</th>
+                  <th className="p-5 whitespace-nowrap">Alamat Rumah</th>
+                  <th className="p-5 whitespace-nowrap">Nominal UKT</th>
+                  <th className="p-5 whitespace-nowrap">No. Rekening</th>
+                  <th className="p-5 pr-7 text-right whitespace-nowrap">Semester</th>
                 </tr>
               </thead>
               <tbody className={isDarkMode ? 'divide-y divide-zinc-800 text-zinc-300' : 'divide-y divide-slate-100 text-slate-700'}>
                 {filteredData && filteredData.length > 0 ? (
                   filteredData.map((row: any[], index: number) => (
-                    <tr key={index} className={isDarkMode ? 'hover:bg-zinc-800/40' : 'hover:bg-slate-50'}>
-                      <td className="p-5 pl-7 font-bold">{row[1] || '-'}</td>
-                      <td className="p-5 text-xs">{row[2] || '-'}</td>
-                      <td className="p-5 text-xs">{row[3] || '-'}</td>
-                      <td className="p-5 font-bold text-emerald-400">{row[4] || '-'}</td>
-                      <td className="p-5 font-mono text-xs">{row[5] || '-'}</td>
-                      <td className="p-5 pr-7 text-right font-bold">{row[6] || '-'}</td>
+                    <tr key={index} className={`transition-colors duration-150 ${isDarkMode ? 'hover:bg-zinc-800/40' : 'hover:bg-slate-50'}`}>
+                      <td className="p-5 pl-7 font-bold whitespace-nowrap">{row[1] || '-'}</td>
+                      {/* Kolom Universitas & Prodi dibuat text-sm dan whitespace-nowrap agar terbaca lurus memanjang */}
+                      <td className="p-5 text-sm font-medium whitespace-nowrap">{row[2] || '-'}</td>
+                      <td className="p-5 text-sm whitespace-nowrap">{row[3] || '-'}</td>
+                      <td className="p-5 font-bold text-emerald-400 whitespace-nowrap">{row[4] || '-'}</td>
+                      <td className="p-5 font-mono text-sm whitespace-nowrap">{row[5] || '-'}</td>
+                      <td className="p-5 pr-7 text-right font-bold whitespace-nowrap">{row[6] || '-'}</td>
                     </tr>
                   ))
                 ) : (
